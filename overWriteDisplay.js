@@ -7,7 +7,7 @@ Hooks.once('ready', () => {
     const authorizedUsers = ["Sin (GM)", "Miria (GM)", "Sven (ADM)", "Vanille (GM)"];
 
     // Check if the current user is a GM but not the world owner
-    if (!authorizedUsers.includes(game.user.name) && !game.user.isOwner) {
+    if (!authorizedUsers.includes(game.user.name) || !game.user.isOwner) {
       console.log("%c[overWriteDisplay.js]: User not authorized nor world owner. Applying restrictions...", "color: orange; font-weight: bold;");
 
       // Disable specific elements in the sidebar to restrict GM access
