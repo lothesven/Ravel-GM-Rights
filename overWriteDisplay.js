@@ -15,33 +15,36 @@ Hooks.once('ready', () => {
         try {
           if (app.options.id === 'settings') {
             console.log("%c[overWriteDisplay.js]: Rendering settings sidebar tab...", "color: grey; font-style: italic;");
-
-            // Remove the Users button
-            const userManagementButton = html.find('button[data-action="users"]');
-            if (userManagementButton.length > 0) {
-              userManagementButton.remove();
-              console.log("%c[overWriteDisplay.js]: Removed the 'Users' button from settings tab.", "color: grey; font-weight: bold;");
-            } else {
-              console.warn("%c[overWriteDisplay.js]: 'Users' button not found in settings tab.", "color: orange;");
-            }
-
-            // Remove the Modules button
-            const modulesButton = html.find('button[data-action="modules"]');
-            if (modulesButton.length > 0) {
-              modulesButton.remove();
-              console.log("%c[overWriteDisplay.js]: Removed the 'Modules' button from settings tab.", "color: grey; font-weight: bold;");
-            } else {
-              console.warn("%c[overWriteDisplay.js]: 'Modules' button not found in settings tab.", "color: orange;");
-            }
-
-            // Remove the World Settings menu item
-            const worldSettingsMenu = html.find('.menu-world');
-            if (worldSettingsMenu.length > 0) {
-              worldSettingsMenu.remove();
-              console.log("%c[overWriteDisplay.js]: Removed the 'World Settings' menu item.", "color: grey; font-weight: bold;");
-            } else {
-              console.warn("%c[overWriteDisplay.js]: 'World Settings' menu item not found.", "color: orange;");
-            }
+            
+            // Using a slight delay to ensure all elements are loaded
+            setTimeout(() => {
+              // Remove the User Management button
+              const userManagementButton = html.find('button[data-action="players"]');
+              if (userManagementButton.length > 0) {
+                userManagementButton.remove();
+                console.log("%c[overWriteDisplay.js]: Removed the 'User Management' button from settings tab.", "color: grey; font-weight: bold;");
+              } else {
+                console.warn("%c[overWriteDisplay.js]: 'User Management' button not found in settings tab.", "color: orange;");
+              }
+        
+              // Remove the Modules button
+              const modulesButton = html.find('button[data-action="modules"]');
+              if (modulesButton.length > 0) {
+                modulesButton.remove();
+                console.log("%c[overWriteDisplay.js]: Removed the 'Manage Modules' button from settings tab.", "color: grey; font-weight: bold;");
+              } else {
+                console.warn("%c[overWriteDisplay.js]: 'Manage Modules' button not found in settings tab.", "color: orange;");
+              }
+        
+              // Remove the World Settings button
+              const worldSettingsButton = html.find('button[data-action="world"]');
+              if (worldSettingsButton.length > 0) {
+                worldSettingsButton.remove();
+                console.log("%c[overWriteDisplay.js]: Removed the 'Edit World' button from settings tab.", "color: grey; font-weight: bold;");
+              } else {
+                console.warn("%c[overWriteDisplay.js]: 'Edit World' button not found in settings tab.", "color: orange;");
+              }
+            }, 100); // Adjust delay as needed
           }
         } catch (error) {
           console.error("%c[overWriteDisplay.js]: Error occurred while rendering sidebar settings.", "color: red; font-weight: bold;", error);
