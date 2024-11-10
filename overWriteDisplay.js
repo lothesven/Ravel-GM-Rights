@@ -1,10 +1,14 @@
 Hooks.once('ready', () => {
   try {
     console.log("%c[overWriteDisplay.js]: Initializing module to restrict GM administrative actions.", "color: green; font-weight: bold;");
+    console.log("%c[overWriteDisplay.js]: User name:", game.user.name, "color: orange; font-weight: bold;");
+
+    // List of authorized usernames
+    const authorizedUsers = ["Sin (GM)", "Miria (GM)", "Sven (ADM)", "Vanille (GM)"];
 
     // Check if the current user is a GM but not the world owner
-    if (game.user.isGM && !game.user.isOwner) {
-      console.log("%c[overWriteDisplay.js]: User is a GM but not the world owner. Applying restrictions...", "color: orange; font-weight: bold;");
+    if (!authorizedUsers.includes(game.user.name) && !game.user.isOwner) {
+      console.log("%c[overWriteDisplay.js]: User not authorized not world owner. Applying restrictions...", "color: orange; font-weight: bold;");
 
       // Disable specific elements in the sidebar to restrict GM access
       Hooks.on('renderSidebarTab', (app, html) => {
@@ -77,7 +81,7 @@ Hooks.once('ready', () => {
         console.error("%c[overWriteDisplay.js]: Error occurred while intercepting user deletion attempts.", "color: red; font-weight: bold;", error);
       }
     } else {
-      console.log("%c[overWriteDisplay.js]: User is either not a GM or is the world owner. No restrictions applied.", "color: green; font-weight: bold;");
+      console.log("%c[overWriteDisplay.js]: User is either authorized ", authorizedUsers, " or the world owner. No restrictions applied.", "color: green; font-weight: bold;");
     }
   } catch (error) {
     console.error("%c[overWriteDisplay.js]: Critical error during module initialization.", "color: red; font-weight: bold;", error);
