@@ -1,92 +1,50 @@
 Hooks.once('ready', () => {
-  try {
-    console.log("[overWriteDisplay.js]: Initializing module to restrict GM administrative actions.");
-    console.log(`[overWriteDisplay.js]: User name: ${game.user.name}`);
+  console.log("[overWriteDisplay.js]: Initializing module to restrict GM administrative actions.");
+  
+  const authorizedUsers = ["Sin (GM)", "Miria (GM)", "Sven (ADM)", "Vanille (GM)"];
+  
+  if (!authorizedUsers.includes(game.user.name) || !game.user.isOwner) {
+    console.log("%c[overWriteDisplay.js]: User not authorized nor world owner. Applying restrictions...", "color: orange; font-weight: bold;");
+    
+    // Observe the settings tab for DOM changes
+    const removeRestrictedButtons = (html) => {
+      const settingsContainer = html.find('#settings-game');
 
-    // List of authorized usernames
-    const authorizedUsers = ["Sin (GM)", "Miria (GM)", "Sven (ADM)", "Vanille (GM)"];
-
-    // Check if the current user is a GM but not the world owner
-    if (!authorizedUsers.includes(game.user.name) || !game.user.isOwner) {
-      console.log("%c[overWriteDisplay.js]: User not authorized nor world owner. Applying restrictions...", "color: orange; font-weight: bold;");
-
-      // Disable specific elements in the sidebar to restrict GM access
-      Hooks.on('renderSidebarTab', (app, html) => {
-        try {
-          if (app.options.id === 'settings') {
-            console.log("%c[overWriteDisplay.js]: Rendering settings sidebar tab...", "color: grey; font-style: italic;");
-            
-            // Using a slight delay to ensure all elements are loaded
-            setTimeout(() => {
-              // Remove the User Management button
-              const userManagementButton = html.find('button[data-action="players"]');
-              if (userManagementButton.length > 0) {
-                userManagementButton.remove();
-                console.log("%c[overWriteDisplay.js]: Removed the 'User Management' button from settings tab.", "color: grey; font-weight: bold;");
-              } else {
-                console.warn("%c[overWriteDisplay.js]: 'User Management' button not found in settings tab.", "color: orange;");
-              }
-        
-              // Remove the Modules button
-              const modulesButton = html.find('button[data-action="modules"]');
-              if (modulesButton.length > 0) {
-                modulesButton.remove();
-                console.log("%c[overWriteDisplay.js]: Removed the 'Manage Modules' button from settings tab.", "color: grey; font-weight: bold;");
-              } else {
-                console.warn("%c[overWriteDisplay.js]: 'Manage Modules' button not found in settings tab.", "color: orange;");
-              }
-        
-              // Remove the World Settings button
-              const worldSettingsButton = html.find('button[data-action="world"]');
-              if (worldSettingsButton.length > 0) {
-                worldSettingsButton.remove();
-                console.log("%c[overWriteDisplay.js]: Removed the 'Edit World' button from settings tab.", "color: grey; font-weight: bold;");
-              } else {
-                console.warn("%c[overWriteDisplay.js]: 'Edit World' button not found in settings tab.", "color: orange;");
-              }
-            }, 100); // Adjust delay as needed
-          }
-        } catch (error) {
-          console.error("%c[overWriteDisplay.js]: Error occurred while rendering sidebar settings.", "color: red; font-weight: bold;", error);
-        }
-      });
-
-      // Block access to user management through URL manipulation
-      Hooks.on('renderUserManagement', (app) => {
-        try {
-          console.log("%c[overWriteDisplay.js]: Attempt to access User Management detected. Blocking access.", "color: purple; font-weight: bold;");
-          ui.notifications.warn("Access to user management is restricted.");
-          app.close();
-        } catch (error) {
-          console.error("%c[overWriteDisplay.js]: Error occurred while blocking User Management access.", "color: red; font-weight: bold;", error);
-        }
-      });
-
-      // Intercept user deletion attempt
-      try {
-        game.users.apps.forEach(app => {
-          if (app.deleteUser) {
-            console.log("%c[overWriteDisplay.js]: Intercepting deleteUser function.", "color: orange; font-weight: bold;");
-            app.deleteUser = () => {
-              try {
-                ui.notifications.warn("Deleting users is restricted.");
-                console.log("%c[overWriteDisplay.js]: User deletion attempt blocked.", "color: grey; font-weight: bold;");
-                return false;
-              } catch (error) {
-                console.error("%c[overWriteDisplay.js]: Error occurred while blocking user deletion.", "color: red; font-weight: bold;", error);
-              }
-            };
-          } else {
-            console.warn("%c[overWriteDisplay.js]: No deleteUser function found for app.", "color: orange;");
-          }
-        });
-      } catch (error) {
-        console.error("%c[overWriteDisplay.js]: Error occurred while intercepting user deletion attempts.", "color: red; font-weight: bold;", error);
+      // Remove User Management button
+      const userManagementButton = settingsContainer.find('button[data-action="players"]');
+      if (userManagementButton.length > 0) {
+        userManagementButton.remove();
+        console.log("%c[overWriteDisplay.js]: Removed 'User Management' button from settings tab.", "color: grey; font-weight: bold;");
       }
-    } else {
-      console.log("%c[overWriteDisplay.js]: User is either authorized or the world owner. No restrictions applied.", "color: green; font-weight: bold;");
-    }
-  } catch (error) {
-    console.error("%c[overWriteDisplay.js]: Critical error during module initialization.", "color: red; font-weight: bold;", error);
+
+      // Remove Modules button
+      const modulesButton = settingsContainer.find('button[data-action="modules"]');
+      if (modulesButton.length > 0) {
+        modulesButton.remove();
+        console.log("%c[overWriteDisplay.js]: Removed 'Manage Modules' button from settings tab.", "color: grey; font-weight: bold;");
+      }
+
+      // Remove World Settings button
+      const worldSettingsButton = settingsContainer.find('button[data-action="world"]');
+      if (worldSettingsButton.length > 0) {
+        worldSettingsButton.remove();
+        console.log("%c[overWriteDisplay.js]: Removed 'Edit World' button from settings tab.", "color: grey; font-weight: bold;");
+      }
+    };
+
+    // Apply the function when settings are rendered
+    Hooks.on('renderSettingsConfig', (app, html) => {
+      console.log("%c[overWriteDisplay.js]: SettingsConfig rendered. Applying button restrictions.", "color: grey; font-style: italic;");
+      removeRestrictedButtons(html);
+
+      // Use MutationObserver to detect any future changes within the settings tab
+      const observer = new MutationObserver(() => {
+        removeRestrictedButtons(html);
+      });
+      
+      observer.observe(html[0], { childList: true, subtree: true });
+    });
+  } else {
+    console.log("%c[overWriteDisplay.js]: User is either authorized or the world owner. No restrictions applied.", "color: green; font-weight: bold;");
   }
 });
