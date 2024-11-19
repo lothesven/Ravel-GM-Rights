@@ -2,7 +2,7 @@
   "name": "Ravel-GM-Rights",
   "title": "Disable Admin Features for GMs",
   "description": "Restricts certain Game Master administrative actions in Foundry VTT.",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "author": "Sven LOTHE",
   "minimumCoreVersion": "12",
   "compatibleCoreVersion": "12",
