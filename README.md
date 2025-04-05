@@ -1,6 +1,6 @@
 # Disable Admin Features for GMs
 
-**Version**: 1.0.0  
+**Version**: 1.0.10  
 **Foundry VTT Compatibility**: v12+
 
 ## Description
