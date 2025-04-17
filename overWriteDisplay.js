@@ -1,7 +1,7 @@
 Hooks.once('ready', () => {
   console.log("[overWriteDisplay.js]: Initializing module to restrict GM administrative actions.");
 
-  const authorizedUsers = ["Sin (GM)", "Miria (GM)", "Saurusius (GM)", "AngelWitch (GM)", "Kufru (GM", "Sven (ADM)"];
+  const authorizedUsers = ["Sin (GM)", "Miria (GM)", "Saurusius (GM)", "AngelWitch (GM)", "Kufru (GM)", "Sven (ADM)"];
 
   if (!authorizedUsers.includes(game.user.name) || !game.user.isOwner) {
     console.log("%c[overWriteDisplay.js]: User not authorized nor world owner. Applying restrictions...", "color: orange; font-weight: bold;");
